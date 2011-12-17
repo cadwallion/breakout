@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+$:.push File.expand_path('../../lib', __FILE__)
+
+begin
+  require 'java'
+rescue LoadError
+  puts 'This game requires JRuby. Please load JRuby and try again.'
+  return false
+end
+
+require 'lwjgl.jar'
+require 'slick.jar'
+require 'breakout'
+
+java_import org.newdawn.slick.AppGameContainer
+
+app = AppGameContainer.new(Breakout::Game.new)
+app.set_display_mode(640, 480, false)
+app.start
