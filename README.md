@@ -1,4 +1,4 @@
-# jRuby Breakout
+# JRuby Breakout
 
 This is a clone of Breakout using Slick 2D and JRuby. It's still rather 
 primitive, but has the basics in place. I created this to get familiar with
