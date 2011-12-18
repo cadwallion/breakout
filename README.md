@@ -1,8 +1,8 @@
 # jRuby Breakout
 
-This is a clone of Breakout using Slick 2D and jRuby. It's still rather 
+This is a clone of Breakout using Slick 2D and JRuby. It's still rather 
 primitive, but has the basics in place. I created this to get familiar with
-jRuby and Slick 2D.
+JRuby and Slick 2D.
 
 # Usage
 
