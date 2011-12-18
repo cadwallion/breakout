@@ -28,7 +28,7 @@ class Breakout
       @score = 0
       5.times do |row_count|
         y = (row_count+1) * 25
-        y += 25 if row_count = 0
+        y += 25 if row_count == 0
         5.times do |cell_count|
           x = (cell_count * 100)
           x += 10 if cell_count == 0
