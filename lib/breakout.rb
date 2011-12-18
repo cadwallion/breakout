@@ -48,7 +48,7 @@ class Breakout
       end
       graphics.draw_string("SCORE: #{@score}", container.width - 150, 10)
       graphics.draw_string("LIVES: #{@lives}", container.width - 350, 10)
-      graphics.draw_string('RubyPong (ESC to exit)', 8, container.height - 30)
+      graphics.draw_string('RubyBreakout (ESC to exit)', 8, container.height - 30)
       if game_won?
         graphics.draw_string("YOU WIN! :)", container.width / 2, container.height / 2)
       elsif game_lost?
@@ -78,17 +78,9 @@ class Breakout
     end
 
     def collision_detection(container, delta)
-      if @ball.leaving_the container
-        @ball.bounce
-      end
-
-      if @ball.leaving_the container, 'bottom'
-        reset
-      end
-
-      if @ball.is_colliding_with? @paddle
-        @ball.bounce
-      end
+      @ball.bounce if @ball.leaving_the container
+      reset if @ball.leaving_the(container, 'bottom')
+      @ball.bounce if @ball.is_colliding_with?(@paddle)
 
       @blocks.each do |block|
         if @ball.is_colliding_with? block
