@@ -12,6 +12,7 @@ java_import org.newdawn.slick.SlickException
 require 'breakout/paddle'
 require 'breakout/ball'
 require 'breakout/block'
+require 'breakout/level'
 
 class Breakout
   class Game < BasicGame
@@ -33,7 +34,7 @@ class Breakout
           x = (cell_count * 100)
           x += 10 if cell_count == 0
 
-          block = Breakout::Block.new(x, y)
+          block = Breakout::Block.new('orange', 1, x, y)
           @blocks.push(block)
         end
       end
