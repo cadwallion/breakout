@@ -50,7 +50,7 @@ class Breakout
       graphics.draw_string("LIVES: #{@lives}", container.width - 350, 10)
       graphics.draw_string('RubyPong (ESC to exit)', 8, container.height - 30)
       if game_won?
-        graphics.draw_string("YOU WIN! :(", container.width / 2, container.height / 2)
+        graphics.draw_string("YOU WIN! :)", container.width / 2, container.height / 2)
       elsif game_lost?
         graphics.draw_string("YOU LOSE! :(", container.width / 2, container.height / 2)
       end
