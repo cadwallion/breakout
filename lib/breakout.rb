@@ -24,6 +24,7 @@ class Breakout
       @ball = Breakout::Ball.new
       @paddle = Breakout::Paddle.new
       @blocks = []
+      @lives = 3
       @score = 0
       5.times do |row_count|
         y = (row_count+1) * 25
@@ -44,16 +45,19 @@ class Breakout
       @blocks.each do |b|
         b.draw
       end
-      graphics.draw_string("SCORE: #{@score}", container.width - 100, 10)
+      graphics.draw_string("SCORE: #{@score}", container.width - 150, 10)
+      graphics.draw_string("LIVES: #{@lives}", container.width - 350, 10)
       graphics.draw_string('RubyPong (ESC to exit)', 8, container.height - 30)
       if game_won?
-        graphics.draw_string("YOU WIN!", container.width / 2, container.height / 2)
+        graphics.draw_string("YOU WIN! :(", container.width / 2, container.height / 2)
+      elsif game_lost?
+        graphics.draw_string("YOU LOSE! :(", container.width / 2, container.height / 2)
       end
     end
 
     def update(container, delta)
       handle_input(container, delta)
-      unless game_won?
+      unless game_won? || game_lost?
         @ball.move(delta)
         collision_detection(container, delta)
       end
@@ -97,10 +101,15 @@ class Breakout
     def reset
       @ball.reset
       @paddle.reset
+      @lives -= 1
     end
 
     def game_won?
       @blocks.empty? 
+    end
+
+    def game_lost?
+      @lives <= 0
     end
   end
 end

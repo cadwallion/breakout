@@ -4,6 +4,10 @@ This is a clone of Breakout using Slick 2D and jRuby. It's still rather
 primitive, but has the basics in place. I created this to get familiar with
 jRuby and Slick 2D.
 
+# Usage
+
+Run the game with ./bin/breakout
+
 # TODO
 
 * Level Loader
