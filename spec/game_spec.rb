@@ -27,6 +27,13 @@ describe Breakout::Game do
     obj
   end
 
+  def stub_game_init
+    subject.instance_variable_set(:@bg, stub_game_object)
+    Breakout::Paddle.stub(:new) { stub_game_object }
+    Breakout::Ball.stub(:new) { stub_game_object }
+    Breakout::Block.stub(:new) { stub_game_object }
+  end
+
   let(:container) { stubbed_container }
 
   describe '#init' do
@@ -34,6 +41,7 @@ describe Breakout::Game do
       Image.stub(:new) { stubbed_image }
       subject.init(container)
     end
+
     it 'creates the background object' do
       subject.instance_variable_get(:@bg).should_not be_nil
     end
@@ -50,15 +58,8 @@ describe Breakout::Game do
       paddle.should be_instance_of(Breakout::Paddle)
     end
 
-    it 'creates the blocks array of 25 blocks' do
-      blocks = subject.instance_variable_get(:@blocks)
-      blocks.should be_instance_of(Array)
-      blocks.size.should == 25
-    end
-
-    it 'fills the blocks array with 25 Breakout::Block objects' do
-      blocks = subject.instance_variable_get(:@blocks)
-      blocks.select { |b| b.class.name == 'Breakout::Block' }.size.should == 25
+    it 'loads the level object' do
+      subject.instance_variable_get(:@level).should be_instance_of(Breakout::Level)
     end
 
     it 'sets the score to 0' do
@@ -133,13 +134,6 @@ describe Breakout::Game do
       d
     end
 
-    def stub_game_init
-      subject.instance_variable_set(:@bg, stub_game_object)
-      Breakout::Paddle.stub(:new) { stub_game_object }
-      Breakout::Ball.stub(:new) { stub_game_object }
-      Breakout::Block.stub(:new) { stub_game_object }
-    end
-    
     before do
       Image.stub(:new) { stubbed_image }
       stub_game_init
@@ -164,10 +158,7 @@ describe Breakout::Game do
     end
 
     it 'draws all blocks to the screen' do
-      blocks = subject.instance_variable_get(:@blocks)
-      blocks.each do |block|
-        block.should_receive(:draw)
-      end
+      subject.instance_variable_get(:@level).should_receive(:draw)
       subject.render(container, graphics)
     end
 
@@ -192,7 +183,7 @@ describe Breakout::Game do
       end
 
       it 'draws the win announcement to the screen' do
-        graphics.should_receive(:draw_string).with('YOU WIN! :)', container.width / 2, container.height / 2)
+        graphics.should_receive(:draw_string).with('YOU WIN! PRESS [ENTER] FOR NEXT LEVEL', container.width / 2, container.height / 2)
         subject.render(container, graphics)
       end
     end
@@ -285,8 +276,10 @@ describe Breakout::Game do
 
     context 'if ball is colliding with a block' do
       before do
+        Image.stub(:new) { stubbed_image }
+        subject.init(container)
         @ball = subject.instance_variable_get(:@ball)
-        @block = subject.instance_variable_get(:@blocks).first
+        @block = subject.instance_variable_get(:@level).blocks.first
         @ball.stub(:is_colliding_with?) { false }
         @ball.stub(:is_colliding_with?).with(@block) { true }
       end
@@ -304,7 +297,7 @@ describe Breakout::Game do
 
       it 'deletes the block from the block array' do
         subject.collision_detection(container, 4)
-        subject.instance_variable_get(:@blocks).should_not include(@block)
+        subject.instance_variable_get(:@level).blocks.should_not include(@block)
       end
     end
 
@@ -339,13 +332,17 @@ describe Breakout::Game do
   end
 
   describe '#game_won?' do
+    before do
+      Image.stub(:new) { stubbed_image }
+      subject.init(container)
+    end
+
     it 'returns true if all blocks are gone' do
-      subject.instance_variable_set(:@blocks, [])
+      subject.instance_variable_get(:@level).blocks = []
       subject.game_won?.should == true
     end
 
     it 'returns false if any blocks remain' do
-      subject.instance_variable_set(:@blocks, [1])
       subject.game_won?.should == false
     end
   end

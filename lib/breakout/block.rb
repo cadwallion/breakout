@@ -27,7 +27,7 @@ class Breakout
     end
 
     def destroyed?
-      @current_hits >= @max_hits 
+      (@current_hits >= @max_hits) 
     end
   end
 end

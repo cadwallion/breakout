@@ -1,11 +1,5 @@
 require 'spec_helper'
 
-class TestLevelFile
-  def read
-    "orange,1,25,25\n" 
-  end
-end
-
 describe Breakout::Level do
   before do
     Image.stub(:new) { double }
@@ -19,7 +13,7 @@ describe Breakout::Level do
 
     it 'generates block objects for each record in the file' do
       level = Breakout::Level.load_from_file(TestLevelFile.new)
-      level.blocks.size.should == 1
+      level.blocks.size.should == 11
       level.blocks.first.class.name.should == 'Breakout::Block'
     end
 

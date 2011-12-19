@@ -24,34 +24,23 @@ class Breakout
       @bg = Image.new('media/bg.png')
       @ball = Breakout::Ball.new
       @paddle = Breakout::Paddle.new
-      @blocks = []
       @lives = 3
       @score = 0
-      5.times do |row_count|
-        y = (row_count+1) * 25
-        y += 25 if row_count == 0
-        5.times do |cell_count|
-          x = (cell_count * 100)
-          x += 10 if cell_count == 0
-
-          block = Breakout::Block.new('orange', 1, x, y)
-          @blocks.push(block)
-        end
-      end
+      @levels_completed = 0
+      @level = Breakout::Level.load_from_file(File.open('level/level1.lvl'))
     end
 
     def render(container, graphics)
       @bg.draw(0, 0)
+      @level.draw
       @ball.draw
       @paddle.draw
-      @blocks.each do |b|
-        b.draw
-      end
       graphics.draw_string("SCORE: #{@score}", container.width - 150, 10)
       graphics.draw_string("LIVES: #{@lives}", container.width - 350, 10)
       graphics.draw_string('RubyBreakout (ESC to exit)', 8, container.height - 30)
+
       if game_won?
-        graphics.draw_string("YOU WIN! :)", container.width / 2, container.height / 2)
+        graphics.draw_string("YOU WIN! PRESS [ENTER] FOR NEXT LEVEL", container.width / 2, container.height / 2)
       elsif game_lost?
         graphics.draw_string("YOU LOSE! :(", container.width / 2, container.height / 2)
       end
@@ -76,6 +65,12 @@ class Breakout
       if input.is_key_down(Input::KEY_RIGHT) || input.is_key_down(Input::KEY_D)
         @paddle.move(delta) if !@paddle.leaving_the(container, 'right')
       end
+
+      if game_won?
+        if input.is_key_down(Input::KEY_ENTER)
+          load_next_level
+        end
+      end
     end
 
     def collision_detection(container, delta)
@@ -83,10 +78,11 @@ class Breakout
       reset if @ball.leaving_the(container, 'bottom')
       @ball.bounce if @ball.is_colliding_with?(@paddle)
 
-      @blocks.each do |block|
+      @level.blocks.each do |block|
         if @ball.is_colliding_with? block
           @ball.bounce
-          @blocks.delete(block)
+          block.hit!
+          @level.blocks.delete(block) if block.destroyed?
           @score += 150
         end
       end
@@ -99,11 +95,17 @@ class Breakout
     end
 
     def game_won?
-      @blocks.empty? 
+      @level.blocks.empty? 
     end
 
     def game_lost?
       @lives <= 0
+    end
+
+    def load_next_level
+      @levels_completed += 1
+      file = File.open("level/level#{@levels_completed+1}.lvl")
+      @level = Breakout::Level.load_from_file(file)
     end
   end
 end

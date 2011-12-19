@@ -20,3 +20,21 @@ shared_examples 'a paddle movement key' do |direction|
     end
   end
 end
+
+class TestLevelFile
+  def read
+var =<<EOF
+orange,1,10,30
+orange,1,110,30
+orange,1,210,30
+orange,1,310,30
+orange,1,410,30
+orange,1,10,55
+orange,1,110,55
+orange,1,210,55
+orange,1,310,55
+orange,1,410,55
+orange,1,410,130
+EOF
+  end
+end

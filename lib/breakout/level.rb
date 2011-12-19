@@ -15,7 +15,7 @@ class Breakout
       def load_from_file(f)
         blocks = []
         CSV.parse(f.read) do |row|
-          blocks << Block.new(row[0], row[1], row[2], row[3]) 
+          blocks << Block.new(row[0], row[1].to_i, row[2].to_i, row[3].to_i) 
         end
         return self.new(blocks)
       end
